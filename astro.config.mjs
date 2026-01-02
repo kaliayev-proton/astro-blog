@@ -12,5 +12,5 @@ export default defineConfig({
   },
 
   integrations: [mdx()],
-  site: "https://maleanta.com"
+  site: "https://maleanta-astro-blog.netlify.app"
 });
