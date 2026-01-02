@@ -1,0 +1,83 @@
+---
+import { Image } from "astro:assets";
+import MainLayout from "src/layouts/MainLayout.astro";
+
+import post05 from "../../assets/images/post-05.png";
+import { Picture } from "astro:assets";
+---
+
+<MainLayout title="Maleanta Images">
+  <div class="bg-gray-900 py-24 sm:py-32">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+      <h1 class="text-5xl text-white">Maleanta Images</h1>
+      <img
+        loading="eager"
+        src="/assets/images/post-05.png"
+        alt=""
+        width="260"
+        height="260"
+      />
+      <Image src={post05} alt="" width={260} height={260} loading="eager" />
+
+      <!-- // more quality, same size -->
+      <Image
+        src={post05}
+        alt=""
+        style={{
+          width: "260px",
+          height: "260px",
+        }}
+        width={500}
+        height={500}
+        loading="eager"
+      />
+
+      <h1 class="text-white mt-10">Quality low</h1>
+      <Image
+        src={post05}
+        alt=""
+        quality="low"
+        width={260}
+        height={260}
+        loading="eager"
+      />
+      <h1 class="text-white mt-10">Formats</h1>
+      <Image
+        src={post05}
+        alt=""
+        format="jpeg"
+        quality="low"
+        width={260}
+        height={260}
+        loading="eager"
+      />
+      <h1 class="text-white mt-10">Picture</h1>
+      <!-- formats={["avif", "webp", "jpeg"]} -->
+      <!-- widths={[249, 540, 720, post05.width]}
+      sizes="(min-width: 800px) 800px, 100vw" -->
+      <Picture
+        src={post05}
+        alt=""
+        quality="low"
+        width={260}
+        height={260}
+        loading="eager"
+        width={post05.width / 2}
+        densities={[1.5, 2]}
+      />
+      <div
+        style={{
+          height: "3000px",
+        }}
+      >
+      </div>
+      <img
+        loading="lazy"
+        src="/assets/images/post-01.png"
+        alt=""
+        width="260"
+        height="260"
+      />
+    </div>
+  </div>
+</MainLayout>

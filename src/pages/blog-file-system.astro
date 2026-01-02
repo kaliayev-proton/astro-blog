@@ -1,23 +1,23 @@
 ---
-import { getCollection } from "astro:content";
+import BlogPost from "../components/BlogPost.astro";
 import { siteConfig } from "../config/site-config";
 import MainLayout from "../layouts/MainLayout.astro";
-import TypeBlogPost from "src/components/TypeBlogPost.astro";
 
-const blogPosts = await getCollection("blog", (post) => post.data.isDraft === false);
+interface Post {
+  frontmatter: {
+    title: string;
+    date: string;
+    author: string;
+    description: string;
+    image: string;
+    tags?: string[];
+  };
+  url: string;
+}
 
-// interface Post {
-//   frontmatter: {
-//     title: string;
-//     date: string;
-//     author: string;
-//     description: string;
-//     image: string;
-// 	tags?: string[];
-//   },
-//   url: string;
-// }
-
+const posts: Post[] = Object.values(
+  import.meta.glob("./posts-old/*.{md,mdx}", { eager: true })
+);
 ---
 
 <MainLayout title="Maleanta Images">
@@ -29,8 +29,6 @@ const blogPosts = await getCollection("blog", (post) => post.data.isDraft === fa
         >
           {siteConfig.title}
         </h1>
-        <a class="mr-4" href="/blog/1">Go to Blog</a>
-        <a class="mr-4" href="/authors">Go to Authors</a>
 
         <p class="mt-2 text-lg/8 text-gray-300">
           {siteConfig.description}
@@ -40,9 +38,16 @@ const blogPosts = await getCollection("blog", (post) => post.data.isDraft === fa
         class="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-700 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3"
       >
         {
-          blogPosts.map((post) => (
-            <TypeBlogPost
-              post={post}
+          posts.map(({ frontmatter, url }) => (
+            <BlogPost
+              date={frontmatter.date}
+              title={frontmatter.title}
+              description={frontmatter.description}
+              labels={frontmatter.tags}
+              author={frontmatter.author}
+              authorRole="Co-Founder / CTO"
+              image={frontmatter.image}
+              url={url}
             />
           ))
         }
@@ -50,11 +55,3 @@ const blogPosts = await getCollection("blog", (post) => post.data.isDraft === fa
     </div>
   </div>
 </MainLayout>
-
-<style>
-  @reference "tailwindcss";
-  a {
-    @apply text-blue-500 hover:underline hover:text-blue-600 cursor-pointer;
-  }
-
-</style>

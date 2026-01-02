@@ -1,0 +1,81 @@
+---
+import type { GetStaticPaths } from "astro";
+import { Image } from "astro:assets";
+import { getEntry } from "astro:content";
+import { getCollection } from "astro:content";
+import BlogLayout from "src/layouts/BlogLayout.astro";
+import { Formatter } from "src/utils/formatter";
+
+export const getStaticPaths = (async () => {
+  const blogPosts = await getCollection("blog");
+
+  return blogPosts.map((post) => ({
+    params: { slug: post.slug },
+    props: post,
+  }));
+}) satisfies GetStaticPaths;
+
+const { data, render } = Astro.props;
+const { slug } = Astro.params;
+const { title } = data;
+interface Author {
+  data: {
+    name: string;
+    avatar: any;
+  };
+}
+const { Content, headings } = await render();
+const author: Author | undefined = await getEntry("author", data.author.id);
+---
+
+<BlogLayout title={title}>
+  <h1 class="text-xs text-gray-500 mb-0">{title}</h1>
+  <!-- <h4 class="text-xs text-gray-400 mb-0">{author}</h4> -->
+  <div class="text-md text-gray-400 mb-0 flex flex-row ml-5">
+    <Image
+      src={author?.data.avatar}
+      alt={`Avatar of ${author?.data.name}`}
+      class="rounded-full object-cover w-12 h-12"
+      width={48}
+      height={48}
+      quality="low"
+      loading="lazy"
+    />
+    <div class="flex flex-col ml-5">
+
+      <a href={`/blog/${data.author.id}`} class="text-sm text-gray-300 inline-block">
+        {author?.data.name}
+      </a>
+      <span class="text-xs text-gray-200">{Formatter.formatDate(data.date)}</span>
+    </div>
+  </div>
+
+  <Image
+    src={data.image}
+    alt={`Image of ${title}`}
+    class="rounded-2xl object-cover w-full h-[250px] my-10"
+    width={600}
+    height={400}
+    quality="low"
+    loading="lazy"
+    transition:name={`${slug}-image`}
+  />
+  <h3>
+    <ol>
+      {
+        headings.map((heading, index) => (
+          <li class="text-xs text-gray-500 ml-4">
+            <a href={`#${heading.slug}`}>
+              {index + 1} - {heading.text}
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </h3>
+  <Content />
+  <div class="my-20">
+    <a href="#btn-back" class="text-sm text-gray-400">Back to top</a>
+  </div>
+
+</BlogLayout>
